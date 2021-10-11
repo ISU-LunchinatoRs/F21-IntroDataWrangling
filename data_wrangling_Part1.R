@@ -21,12 +21,14 @@ library(readxl) #hadley wickham's package for reading in excel files. not in Tid
 # There are multiple ways to do this, which impacts your imported dataframe. The key things that vary are how R interprets your blank values & NA's, and how R assigns a class to each column. For this exercise, we will use read.csv (option 1)
 
 ## option 1: if a csv or table, use read.csv or read.table. -------
-transplant2 <- read.csv("data/raw/transplant_raw.csv", na.strings = c("", "NA", "na", " "))
+transplant <- read.csv("data/raw/transplant_raw.csv", na.strings = c("", "NA", "na", " ", stringsAsFactors = FALSE))
 
+transplant2 <- read_csv("data/raw/transplant_raw.csv")
+                        
 ## option 2: if excel, use readxl(). ---------
 # note- load this version too to use to see differences in how read.csv and readxl work, but after we do that, the rest of code is set up to work with the read.csv version
 
-transplant_excel <- read_excel("data/raw/transplant_raw.xlsx", sheet = 1, col_names = T, col_types = NULL) #col_types = null is default, and readxl guesses what each column is. by default, readxl converts blank cells to missing data. use na="yourcode" if you have a code you use for missing values.
+transplant_excel <- read_excel("data/raw/transplant_raw.xlsx", sheet = 1, col_names = TRUE, col_types = NULL) #col_types = null is default, and readxl guesses what each column is. by default, readxl converts blank cells to missing data. use na="yourcode" if you have a code you use for missing values.
 
 
 
@@ -96,6 +98,7 @@ names(transplant)
 #check out function clean_names in janitor package. This cleans up your column names for you! 
 library(janitor)
 transplant_excel2 <- clean_names(transplant_excel) 
+colnames(transplant_excel2)
 
 # Step 4: Add, remove, split, combine columns ----------
 
@@ -103,7 +106,7 @@ transplant_excel2 <- clean_names(transplant_excel)
 
 ### 4.1.1: Add column directly ------
 
-transplant <- transplant %>%
+transplant2 <- transplant %>%
   mutate(year = 2013)
 #this experiment happened in 2013. Added this in a new column, so now have 12 columns/variables. All rows will have the same value for this column. 
 
