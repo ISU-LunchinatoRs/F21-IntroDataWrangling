@@ -44,9 +44,15 @@ summary(transplant)
 (transplant_sites <- transplant %>%
   filter(site == "anao" | site == "ladt")) 
 
-# Another way to do this is to use the %>% function, which can be used to identify if an element belongs to a vector or dataframe. For example, this will select every row where the site is anao, ladt, or forb
+# Another way to do this is to use the %in% function, which can be used to identify if an element belongs to a vector or dataframe. For example, this will select every row where the site is anao, ladt, or forb
 (transplant_sites2 <- transplant %>%
   filter(site %in% c("anao", "ladt", "forb"))) 
+
+# And to exclude some items, you can create a function yourself
+`%notin%` <- Negate(`%in%`)
+
+(transplant_sites3 <- transplant %>%
+    filter(site %notin% c("anao", "ladt", "forb"))) 
 
 # NA's: filter() only includes rows where the condition is TRUE; it excludes both FALSE and NA values. If you want to preserve missing values, ask for them explicitly
 (transplantbig_na <- transplant %>%
@@ -70,6 +76,9 @@ summary(transplant)
 # can select all columns between two columns
 (transplant_select3 <- transplant %>%
   select(web:webpres))
+
+transplant_select3 %>%
+  select(bew = web, enddate, webpres) # can rename and reorder columns too!
 
 # useful helper functions for select (from the tidyverse)
 # starts_with("abc"): matches names that begin with “abc”.
@@ -130,7 +139,7 @@ transplant %>%
   count(site) 
 
 transplant %>%
-  count(site, island)  # creates a table of counts by site/island combos. Can add continuous values, but not very useful unless the same values are repeated frequently. 
+  count(native, netting, island)  # creates a table of counts by site/island combos. Can add continuous values, but not very useful unless the same values are repeated frequently. 
 
 ## Base R functions for summarizing ---------
 # apply, tapply, lapply, sapply are the base R versions of summarize
@@ -157,12 +166,12 @@ transplant %>%
   group_by(island, site, netting) %>%
   summarize (avgweb = mean(websize),
              avgduration = mean(duration), 
-             numobs = n()))
+             numobs = n())) 
 
 # Can use group_by with other functions too. 
 # Here, we use filter to pull out the sites that have more than 2 rows for a combination of island/site/native (i.e. a site that has 3 or more spiders that were already in place (native) or moved (not native)), and then summarize the mean websize within each of those groups (e.g. 'native' spiders at anao)
 
-transplant_summ2 <- transplant %>%
+transplant_summ2g <- transplant %>%
   group_by(island, site, native) %>%
   filter(n() > 2) %>%
   summarize (avgweb = mean(websize), .groups = "drop")  #.groups ungroups the output, which can be handy for future calculations using this tibble. 
