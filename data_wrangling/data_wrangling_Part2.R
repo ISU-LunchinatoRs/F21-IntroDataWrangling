@@ -163,7 +163,9 @@ transplant$site <- as.factor(trimws(transplant$site))
 ## 2.7: Center continuous predictors ----------
 # Centering continuous predictors with large values is a useful practice for analysis - may help with convergence
 transplant <- transplant %>%
-    mutate(websize_c = as.numeric(scale(websize)))
+    mutate(websize_c = as.numeric(scale(websize, scale = F)))
+  
+# Note - to convert the data to standard normal deviates, use: scale(x), which has defaults of center = TRUE, scale = TRUE. Once you convert to standard normal deviates, the variance now = 1.
 
 ## 2.8: Deal with dates (lubridate) ----------
 #Change date format to standard yyyymmdd format
