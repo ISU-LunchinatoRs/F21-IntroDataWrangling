@@ -18,9 +18,8 @@ summary(transplant)
 
 # 1: Create new columns or edit observations within existing columns (mutate) ----------
 
-transplant <- transplant %>%
-  mutate(webarea = pi * ((websize/2)/100)^2) %>%
-  print() #print the first few rows to check
+(transplant <- transplant %>%
+  mutate(webarea = pi * ((websize/2)/100)^2))
 
 #assume circle, divide in half to get radius, divide by 100 to get from cm to m, calculate area (pi * radius squared)
 
@@ -63,9 +62,9 @@ levels(transplant$island)
 
 transplant2 <- transplant %>%
   mutate(siteisl = fct_collapse(site,
-                               "saipan site" = c("forbi", "ladt", "mtr"), 
-                               "guam site" = c("anao", "nblas")))
-str(transplant)
+                               "saipan_site" = c("forbi", "ladt", "mtr"), 
+                               "guam_site" = c("anao", "nblas")))
+str(transplant2)
 
 
 ## 2.3: Re-order levels within a variable (forcats) ----------
@@ -79,6 +78,10 @@ levels(transplant$site)
 transplant <- transplant %>%
   mutate(island = fct_relevel(island, c("saipan", "guam")))
 
+# Can move one level to the first position without stating all of the other levels
+transplant <- transplant %>%
+  mutate(island = fct_relevel(island, "guam"))
+
 levels(transplant$island)
 
 #base R approach for fct_relevel
@@ -86,10 +89,9 @@ levels(transplant$site) #in alphabetical order
 transplant$site <- factor(transplant$site, levels = c("nblas", "anao", "ladt", "forbi", "mtr"))
 levels(transplant$site)
 
-# Reorder by the levels of another variable (reorder sites by mean websize)
+# Reorder by the levels of another variable (reorder sites by mean websize, in ascending order)
 transplant <- transplant %>%
-  mutate(site = fct_reorder(site, websize, mean)) %>%
-  view()
+  mutate(site = fct_reorder(site, websize, mean))
 
 #view shows that the rows are still in the same order, but the levels have been reordered
 levels(transplant$site)
@@ -115,25 +117,25 @@ transplant <- transplant %>%
 levels(transplant$island)
 
 #tidyverse approach
-transplant2 <- transplant %>%
+transplant <- transplant %>%
   mutate(island = fct_drop(island)) 
-levels(transplant2$island)
+levels(transplant$island)
 
 #base R approach
-transplant2$island <- droplevels(transplant2$island) # or
+transplant2$island <- droplevels(transplant$island) # or
 transplant2$island <- factor(transplant$island)
 levels(transplant2$island)
 
 ## create anonymous/arbitrary identifier for a factor
 transplant3 <- transplant %>%
-  mutate(anon_island = fct_anon(island, prefix = "test"))
+  mutate(anon_web = fct_anon(web, prefix = "test"))
 
 ## 2.5: Deal with character data or complex strings (stringr) -----
 # string functions work with regular expressions, patterns of text
 # https://stringr.tidyverse.org/ shows the full extent of the package
 
 # str_length() tells you the # of characters in a string
-  str_length(transplant$web_a)
+  str_length(transplant$site)
   
 # str_c() allows you to combine the characters from two variables 
   transplant2 <- transplant %>%

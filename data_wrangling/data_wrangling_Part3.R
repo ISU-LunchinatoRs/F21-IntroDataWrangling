@@ -1,4 +1,4 @@
-# EEOB590: Data wrangling Part 3 ----------
+# LunchinatoRS: Data wrangling Part 3 ----------
 
 # Subsetting & summarizing 
 # 1) Subset data (filter)
